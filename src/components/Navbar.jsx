@@ -1,38 +1,40 @@
-import React from 'react'
-import { Link } from "react-router-dom";
-import { useContext } from 'react';
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
+import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 
 const Navbar = () => {
-    const { cart } = useContext(CartContext);
+  const { cart } = useContext(CartContext);
+  const totalItems = cart.reduce((count, item) => count + item.quantity, 0);
 
-    return (
-        <nav style={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "15px 30px",
-    background: "#020617",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.5)"
-}}>
+  const navLinkClass = ({ isActive }) =>
+    isActive ? "nav-link active" : "nav-link";
 
-            <h2>Food Delivery App</h2>
-            <div style={{display: "flex", gap: "20px", alignItems: "center", color: "#e6e8ed"}}>
-                <Link to="/" style={linkStyle}>Home</Link>
-                <Link to="/cart" style={{ color: "white", textDecoration: "none" }}>Cart({cart.length})</Link>
-                <Link to="/login" style={linkStyle}>Login</Link>
-                <Link to="/signup" style={linkStyle}>Signup</Link>
-            </div>
-        </nav>
-    )
-}
+  return (
+    <nav className="navbar">
+      <div className="container navbar__inner">
+        <Link to="/" className="navbar__brand">
+          NexBite
+        </Link>
 
-const linkStyle = {
-    textDecoration: "none",
-    color: "#e6e8ed",
-    fontWeight: "bold"
-}
+        <div className="navbar__links">
+          <NavLink to="/" end className={navLinkClass}>
+            Home
+          </NavLink>
+          <NavLink to="/cart" className={navLinkClass}>
+            Cart <span className="badge">{totalItems}</span>
+          </NavLink>
+          <NavLink to="/login" className={navLinkClass}>
+            Login
+          </NavLink>
+          <NavLink to="/signup" className={navLinkClass}>
+            Signup
+          </NavLink>
+        </div>
+      </div>
+    </nav>
+  );
+};
 
-export { linkStyle }
-export default Navbar
+export default Navbar;
 

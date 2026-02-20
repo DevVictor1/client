@@ -1,75 +1,102 @@
 import { useContext } from "react";
-import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { CartContext } from "../context/CartContext";
 
 const Cart = () => {
-    const {
-    cart,
-    removeFromCart,
-    increaseQty,
-    decreaseQty
-} = useContext(CartContext);
+  const { cart, removeFromCart, increaseQty, decreaseQty } =
+    useContext(CartContext);
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
-
-    const totalPrice = cart.reduce(
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+  const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
-);
+  );
 
-    return (
-    <div className="container">
-        <h1>🛒 Your Cart</h1>
+  return (
+    <section className="container page">
+      <header className="page-header">
+        <h1 className="page-title">Your Cart</h1>
+        <p className="page-subtitle">Review your order before checkout.</p>
+      </header>
 
-        {cart.length === 0 ? (
-        <p>Your cart is empty</p>
-    ) : (
-        <>
-        {cart.map((item) => (
-            <div key={item.id} style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "10px",
-                background: "#1e293b",
-                padding: "10px",
-                borderRadius: "8px"
-            }}>
-                <span>{item.name}</span>
+      {cart.length === 0 ? (
+        <div className="surface empty-state">
+          <h2>Your cart is empty</h2>
+          <p className="page-subtitle">
+            Add something from the menu to start your order.
+          </p>
+          <button className="btn btn-primary" onClick={() => navigate("/")}>
+            Browse Menu
+          </button>
+        </div>
+      ) : (
+        <div className="cart-layout">
+          <div className="surface cart-items">
+            {cart.map((item) => (
+              <article key={item.id} className="cart-item">
+                <div>
+                  <p className="cart-item__title">{item.name}</p>
+                  <p className="cart-item__price">
+                    NGN {(item.price * item.quantity).toLocaleString()}
+                  </p>
+                </div>
 
-            <div>
-                <button onClick={() => decreaseQty(item.id)}>-</button>
-                <span style={{ margin: "0 10px" }}>{item.quantity}</span>
-                <button onClick={() => increaseQty(item.id)}>+</button>
+                <div className="qty-control">
+                  <button
+                    className="btn btn-icon"
+                    onClick={() => decreaseQty(item.id)}
+                    aria-label={`Decrease quantity for ${item.name}`}
+                  >
+                    -
+                  </button>
+                  <span className="qty-value">{item.quantity}</span>
+                  <button
+                    className="btn btn-icon"
+                    onClick={() => increaseQty(item.id)}
+                    aria-label={`Increase quantity for ${item.name}`}
+                  >
+                    +
+                  </button>
+                </div>
+
+                <button
+                  className="btn btn-danger"
+                  onClick={() => removeFromCart(item.id)}
+                >
+                  Remove
+                </button>
+              </article>
+            ))}
+          </div>
+
+          <aside className="surface cart-summary">
+            <h2 className="food-name">Order Summary</h2>
+            <p className="summary-line">
+              <span>Items</span>
+              <span>{totalItems}</span>
+            </p>
+            <p className="summary-line">
+              <span>Delivery</span>
+              <span>NGN 0</span>
+            </p>
+            <div className="summary-total">
+              <span>Total</span>
+              <span>NGN {totalPrice.toLocaleString()}</span>
             </div>
-
-              <span>₦{item.price * item.quantity}</span>
-
-            <button onClick={() => removeFromCart(item.id)}>
-                Remove
-            </button>
-            </div>
-        ))}
-
-        <div style={{
-            marginTop: "20px",
-            padding: "15px",
-            background: "#020617",
-            borderRadius: "10px"
-        }}>
-            <h2>Total: ₦{totalPrice}</h2>
 
             <button
-                style={{ marginTop: "10px", width: "100%" }}
-                onClick={() => navigate("/checkout")}
+              className="btn btn-primary"
+              style={{ width: "100%" }}
+              onClick={() => navigate("/checkout")}
             >
-                Proceed to Checkout
+              Proceed to Checkout
             </button>
-            </div>
-        </>
-    )}
-    </div>
-);
-}
+          </aside>
+        </div>
+      )}
+    </section>
+  );
+};
 
 export default Cart;

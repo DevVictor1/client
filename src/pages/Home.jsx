@@ -3,22 +3,22 @@ import FoodData from "../data/FoodData";
 import FoodCard from "../components/FoodCard";
 
 const Home = () => {
-    return (
-        <div className="container">
-            <h1>🍽️ Food Menu</h1>
+  return (
+    <section className="container page">
+      <header className="page-header">
+        <h1 className="page-title">Food Menu</h1>
+        <p className="page-subtitle">
+          Fresh picks, fast delivery, and a premium ordering experience.
+        </p>
+      </header>
 
-<div style={{
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-    gap: "20px"
-                        }}>
-    {FoodData.map((food) => (
-        <FoodCard key={food.id} food={food} />
-    ))}
-</div>
-</div>
-
-    )
-}
+      <div className="menu-grid">
+        {FoodData.map((food) => (
+          <FoodCard key={food.id} food={food} />
+        ))}
+      </div>
+    </section>
+  );
+};
 
 export default Home;

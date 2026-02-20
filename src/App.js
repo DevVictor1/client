@@ -11,20 +11,24 @@ import CartProvider from "./context/CartContext";
 import Checkout from "./pages/Checkout"
 
 const App = () => {
-    return (
-      <CartProvider>
+  return (
+    <CartProvider>
       <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/checkout" element={<Checkout/>} />
-          </Routes>
+        <div className="app-shell">
+          <Navbar />
+          <main className="app-main">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/checkout" element={<Checkout />} />
+            </Routes>
+          </main>
+        </div>
       </Router>
-      </CartProvider>
-    );
-}
+    </CartProvider>
+  );
+};
 
 export default App;
