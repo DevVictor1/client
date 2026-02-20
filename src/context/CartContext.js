@@ -1,24 +1,64 @@
 import { createContext, useState } from "react";
+
 export const CartContext = createContext();
 
-const CartProvider = ({ children }) => {
+function CartProvider({ children }) {
     const [cart, setCart] = useState([]);
 
-    
-    // Add to cart function
+  // ADD TO CART (with quantity)
     const addToCart = (food) => {
-        setCart((prev) => [...prev, food]);
+    const existingItem = cart.find(item => item.id === food.id);
+
+    if (existingItem) {
+        setCart(cart.map(item =>
+        item.id === food.id
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    ));
+    } else {
+        setCart([...cart, { ...food, quantity: 1 }]);
+    }
     };
 
-    // Remove from cart function
-    const removeFromCart = (Id) => {
-        setCart((prev) => prev.filter((item, index) => index !== Id));
+  // REMOVE ITEM COMPLETELY
+    const removeFromCart = (id) => {
+    setCart(cart.filter(item => item.id !== id));
+    };
+
+  // INCREASE QUANTITY
+    const increaseQty = (id) => {
+    setCart(cart.map(item =>
+        item.id === id
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    ));
+    };
+
+  // DECREASE QUANTITY
+    const decreaseQty = (id) => {
+    setCart(cart.map(item =>
+        item.id === id
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    ).filter(item => item.quantity > 0));
+    };
+
+  // CLEAR CART
+    const clearCart = () => {
+    setCart([]);
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
-            {children}
-        </CartContext.Provider>
+    <CartContext.Provider value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        increaseQty,
+        decreaseQty,
+        clearCart
+    }}>
+    {children}
+    </CartContext.Provider>
     );
 }
 

@@ -28,3 +28,14 @@ button {
 button:hover {
     background: #0ea5e9;
 }
+
+input {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}
+
+input:focus {
+    border: 2px solid #38bdf8;
+}
