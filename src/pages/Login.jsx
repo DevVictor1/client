@@ -1,15 +1,35 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api";
+import { AuthContext } from "../context/AuthContext";
+import { ToastContext } from "../context/ToastContext";
+
+
 
 const Login = () => {
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+  const { showToast } = useContext(ToastContext);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
+    setIsLoading(true);
+    try {
+      const res = await api.post("/api/auth/login", form);
+      login(res.data.token, res.data.user);
+      showToast("Login successful. Welcome back!");
+      navigate("/");
+    } catch (error) {
+      console.error("Login error:", error);
+      showToast("Failed to log in. Please try again.", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,13 +66,13 @@ const Login = () => {
           />
         </label>
 
-        <button className="btn btn-primary" type="submit">
-          Login
+        <button className="btn btn-primary" type="submit" disabled={isLoading}>
+          {isLoading ? "Logging in..." : "Login"}
         </button>
 
         <p className="page-subtitle">
           New here?{" "}
-          <Link className="muted-link" to="/signup">
+          <Link className="muted-link" to="/register">
             Create an account
           </Link>
         </p>

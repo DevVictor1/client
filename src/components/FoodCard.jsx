@@ -1,6 +1,7 @@
 import React from "react";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
+import formatCurrency from "../utils/formatCurrency";
 
 const FoodCard = ({ food }) => {
   const { addToCart } = useContext(CartContext);
@@ -11,7 +12,7 @@ const FoodCard = ({ food }) => {
 
       <div className="food-card__meta">
         <h3 className="food-name">{food.name}</h3>
-        <p className="food-price">NGN {food.price.toLocaleString()}</p>
+        <p className="food-price">{formatCurrency(food.price)}</p>
       </div>
 
       <button className="btn btn-secondary" onClick={() => addToCart(food)}>

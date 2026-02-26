@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
+import formatCurrency from "../utils/formatCurrency";
 
 const Cart = () => {
   const { cart, removeFromCart, increaseQty, decreaseQty } =
@@ -12,6 +13,10 @@ const Cart = () => {
     (total, item) => total + item.price * item.quantity,
     0
   );
+
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
 
   return (
     <section className="container page">
@@ -38,7 +43,7 @@ const Cart = () => {
                 <div>
                   <p className="cart-item__title">{item.name}</p>
                   <p className="cart-item__price">
-                    NGN {(item.price * item.quantity).toLocaleString()}
+                    {formatCurrency(item.price * item.quantity)}
                   </p>
                 </div>
 
@@ -78,17 +83,18 @@ const Cart = () => {
             </p>
             <p className="summary-line">
               <span>Delivery</span>
-              <span>NGN 0</span>
+              <span>{formatCurrency(0)}</span>
             </p>
             <div className="summary-total">
               <span>Total</span>
-              <span>NGN {totalPrice.toLocaleString()}</span>
+              <span>{formatCurrency(totalPrice)}</span>
             </div>
 
             <button
               className="btn btn-primary"
               style={{ width: "100%" }}
-              onClick={() => navigate("/checkout")}
+              onClick={handleCheckout}
+              disabled={cart.length === 0}
             >
               Proceed to Checkout
             </button>

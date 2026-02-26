@@ -1,15 +1,40 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
+import { ToastContext } from "../context/ToastContext";
+import api from "../services/api";
+import formatCurrency from "../utils/formatCurrency";
 
 function Checkout() {
-  const { clearCart } = useContext(CartContext);
+  const { cart, clearCart } = useContext(CartContext);
+  const { showToast } = useContext(ToastContext);
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleOrder = (e) => {
+  const totalAmount = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
+  const handleOrder = async (e) => {
     e.preventDefault();
-    clearCart();
-    setSuccess(true);
+    if (cart.length === 0) return;
+
+    setIsLoading(true);
+    try {
+      await api.post("/api/orders", {
+        items: cart,
+        totalAmount,
+      });
+      clearCart();
+      setSuccess(true);
+      showToast("Order placed successfully!");
+    } catch (error) {
+      console.error("Checkout error:", error);
+      showToast("Failed to place order. Please try again.", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -56,9 +81,22 @@ function Checkout() {
             />
           </label>
 
-          <button className="btn btn-primary" type="submit">
-            Place Order
+          <div className="summary-line">
+            <span>Total</span>
+            <span>{formatCurrency(totalAmount)}</span>
+          </div>
+
+          <button
+            className="btn btn-primary"
+            type="submit"
+            disabled={cart.length === 0 || isLoading}
+          >
+            {isLoading ? "Placing order..." : "Place Order"}
           </button>
+
+          {cart.length === 0 && (
+            <p className="page-subtitle">Your cart is empty.</p>
+          )}
         </form>
       )}
     </section>

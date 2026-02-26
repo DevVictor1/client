@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api";
+import { ToastContext } from "../context/ToastContext";
 
 const Signup = () => {
 const [form, setForm] = useState({
@@ -7,10 +9,23 @@ const [form, setForm] = useState({
     email: "",
     password: "",
 });
+  const navigate = useNavigate();
+  const { showToast } = useContext(ToastContext);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
+    setIsLoading(true);
+    try {
+      await api.post("/api/auth/register", form);
+      showToast("Account created successfully. Please log in.");
+      navigate("/login");
+    } catch (error) {
+      console.error("Signup error:", error);
+      showToast("Failed to register. Please try again.", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -62,8 +77,8 @@ const [form, setForm] = useState({
           />
         </label>
 
-        <button className="btn btn-primary" type="submit">
-          Create Account
+        <button className="btn btn-primary" type="submit" disabled={isLoading}>
+          {isLoading ? "Creating..." : "Create Account"}
         </button>
 
         <p className="page-subtitle">
