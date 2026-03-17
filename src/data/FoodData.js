@@ -7,19 +7,22 @@ const foodData = [
     id: 1,
     name: "jollof Rice",
     price: 1500,
-    image: jollof
+    image: jollof,
+    category: "Rice"
     },
 {
     id: 2,
     name: "burger",
     price: 2500,
-    image: burger
+    image: burger,
+    category: "Burgers"
     },
 {
     id: 3,
     name: "pizza",
     price: 4000,
-    image: pizza
+    image: pizza,
+    category: "Pizza"
     }
 ];
 
