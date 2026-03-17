@@ -17,7 +17,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="container navbar__inner">
         <Link to="/" className="navbar__brand">
-          NexBite
+          VicFoods
         </Link>
 
         <div className="navbar__links">
